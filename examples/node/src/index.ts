@@ -1,10 +1,21 @@
 import fs from "node:fs";
 import path from "node:path";
-import grpc from "@grpc/grpc-js";
+import * as grpc from "@grpc/grpc-js";
 
 const serveGrpc = require("./gen/ai/docling/serve/v1/docling_serve_grpc_pb.js");
 const servePb = require("./gen/ai/docling/serve/v1/docling_serve_pb.js");
 const typesPb = require("./gen/ai/docling/serve/v1/docling_serve_types_pb.js");
+const corePb = require("./gen/ai/docling/core/v1/docling_document_pb.js");
+
+// Match docling-serve's 2 GB server-side message limits so realistic PDFs
+// don't trip the default 4 MB client receive cap.
+const GRPC_MAX_MESSAGE_BYTES = 2 * 1024 * 1024 * 1024 - 1;
+const CHANNEL_OPTIONS = {
+  "grpc.max_receive_message_length": GRPC_MAX_MESSAGE_BYTES,
+  "grpc.max_send_message_length": GRPC_MAX_MESSAGE_BYTES,
+};
+
+const ItemCase = corePb.BaseTextItem.ItemCase;
 
 function readExpected(fixturePath: string) {
   const expectedName = path.basename(fixturePath).replace(".pdf", ".json");
@@ -15,32 +26,31 @@ function readExpected(fixturePath: string) {
 function extractTexts(doc: any): string[] {
   const out: string[] = [];
   for (const item of doc.getTextsList()) {
-    const kind = item.getItemCase();
     let text = "";
-    switch (kind) {
-      case 1:
+    switch (item.getItemCase()) {
+      case ItemCase.TITLE:
         text = item.getTitle()?.getBase()?.getText() || "";
         break;
-      case 2:
+      case ItemCase.SECTION_HEADER:
         text = item.getSectionHeader()?.getBase()?.getText() || "";
         break;
-      case 3:
+      case ItemCase.LIST_ITEM:
         text = item.getListItem()?.getBase()?.getText() || "";
         break;
-      case 4:
-        text = item.getCode()?.getText() || "";
-        break;
-      case 5:
+      case ItemCase.FORMULA:
         text = item.getFormula()?.getBase()?.getText() || "";
         break;
-      case 6:
+      case ItemCase.TEXT:
         text = item.getText()?.getBase()?.getText() || "";
         break;
-      case 7:
+      case ItemCase.FIELD_HEADING:
         text = item.getFieldHeading()?.getBase()?.getText() || "";
         break;
-      case 8:
+      case ItemCase.FIELD_VALUE:
         text = item.getFieldValue()?.getBase()?.getText() || "";
+        break;
+      case ItemCase.CODE:
+        text = item.getCode()?.getText() || "";
         break;
     }
     const cleaned = text.trim();
@@ -90,7 +100,11 @@ async function main() {
   const wrapper = new servePb.ConvertSourceRequest();
   wrapper.setRequest(convertRequest);
 
-  const client = new serveGrpc.DoclingServeServiceClient(addr, grpc.credentials.createInsecure());
+  const client = new serveGrpc.DoclingServeServiceClient(
+    addr,
+    grpc.credentials.createInsecure(),
+    CHANNEL_OPTIONS,
+  );
 
   client.convertSource(wrapper, (err: Error | null, response: any) => {
     if (err) {

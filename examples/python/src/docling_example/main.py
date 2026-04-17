@@ -4,13 +4,23 @@ import os
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 import grpc
 from ai.docling.serve.v1 import docling_serve_pb2, docling_serve_pb2_grpc, docling_serve_types_pb2
+
+# Match docling-serve's 2 GB server-side message limits so realistic PDFs
+# don't trip the default 4 MB client receive cap.
+GRPC_MAX_MESSAGE_BYTES = 2 * 1024 * 1024 * 1024 - 1
+CHANNEL_OPTIONS = [
+    ("grpc.max_send_message_length", GRPC_MAX_MESSAGE_BYTES),
+    ("grpc.max_receive_message_length", GRPC_MAX_MESSAGE_BYTES),
+]
 
 
 def expected_snapshot_for_fixture(fixture: Path) -> dict:
     expected_name = fixture.stem + ".json"
-    expected_path = fixture.parents[2] / "expected" / expected_name
+    expected_path = fixture.parents[1] / "expected" / expected_name
     return json.loads(expected_path.read_text(encoding="utf-8"))
 
 
@@ -70,7 +80,7 @@ def run() -> int:
     )
 
     try:
-        channel = grpc.insecure_channel(addr)
+        channel = grpc.insecure_channel(addr, options=CHANNEL_OPTIONS)
         stub = docling_serve_pb2_grpc.DoclingServeServiceStub(channel)
         response = stub.ConvertSource(request, timeout=120)
         assert_structural(expected_snapshot_for_fixture(fixture), response)

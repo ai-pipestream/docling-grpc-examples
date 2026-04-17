@@ -21,6 +21,10 @@ import java.util.List;
 public final class Main {
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
+  // Match docling-serve's 2 GB server-side message limits so realistic PDFs
+  // don't trip the default 4 MB client receive cap.
+  private static final int GRPC_MAX_MESSAGE_BYTES = Integer.MAX_VALUE - 1;
+
   private Main() {}
 
   public static void main(String[] args) throws Exception {
@@ -42,7 +46,10 @@ public final class Main {
         .setRequest(ConvertDocumentRequest.newBuilder().addSources(source).build())
         .build();
 
-    ManagedChannel channel = ManagedChannelBuilder.forTarget(addr).usePlaintext().build();
+    ManagedChannel channel = ManagedChannelBuilder.forTarget(addr)
+        .usePlaintext()
+        .maxInboundMessageSize(GRPC_MAX_MESSAGE_BYTES)
+        .build();
     try {
       ConvertSourceResponse response = DoclingServeServiceGrpc.newBlockingStub(channel).convertSource(request);
       JsonNode expected = MAPPER.readTree(fixture.getParent().getParent().resolve("expected").resolve(fixture.getFileName().toString().replace(".pdf", ".json")).toFile());

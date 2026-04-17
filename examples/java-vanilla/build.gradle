@@ -54,3 +54,7 @@ sourceSets {
 application {
     mainClass = 'org.example.docling.vanilla.Main'
 }
+
+tasks.named('processResources').configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

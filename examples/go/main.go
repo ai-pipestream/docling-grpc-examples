@@ -18,6 +18,10 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+// Match docling-serve's 2 GB server-side message limits so realistic PDFs
+// don't trip the default 4 MB client receive cap.
+const grpcMaxMessageBytes = 2*1024*1024*1024 - 1
+
 type snapshot struct {
 	MinPages             int      `json:"min_pages"`
 	MinNonEmptyTextItems int      `json:"min_non_empty_text_items"`
@@ -58,7 +62,13 @@ func run(addr, fixture string) error {
 		return err
 	}
 
-	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(addr,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(grpcMaxMessageBytes),
+			grpc.MaxCallSendMsgSize(grpcMaxMessageBytes),
+		),
+	)
 	if err != nil {
 		return err
 	}
