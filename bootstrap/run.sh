@@ -7,8 +7,8 @@ CORE_DIR="${WORK_DIR}/docling-core"
 SERVE_DIR="${WORK_DIR}/docling-serve"
 DOCLING_GRPC_ADDR="${DOCLING_GRPC_ADDR:-localhost:50051}"
 DOCLING_GRPC_PORT="${DOCLING_GRPC_PORT:-50051}"
-CORE_SHA="REPLACE_WITH_DOCLING_CORE_SHA"
-SERVE_SHA="REPLACE_WITH_DOCLING_SERVE_SHA"
+CORE_SHA="${CORE_SHA:-REPLACE_WITH_DOCLING_CORE_SHA}"
+SERVE_SHA="${SERVE_SHA:-REPLACE_WITH_DOCLING_SERVE_SHA}"
 SERVE_PID=""
 
 cleanup() {
@@ -85,7 +85,8 @@ for example in python java-quarkus java-vanilla go node; do
 done
 
 if [[ "${CORE_SHA}" == REPLACE_WITH_* ]] || [[ "${SERVE_SHA}" == REPLACE_WITH_* ]]; then
-  echo "Set CORE_SHA and SERVE_SHA in bootstrap/run.sh before running integration bootstrap."
+  echo "Set CORE_SHA and SERVE_SHA in bootstrap/run.sh (or export env vars) before running integration bootstrap."
+  echo "Use pinned commits from docling-project/docling-core and docling-project/docling-serve."
   exit 1
 fi
 
