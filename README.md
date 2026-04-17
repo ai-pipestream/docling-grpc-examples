@@ -28,6 +28,7 @@ examples/
   go/                               # protoc-gen-go + grpc-go
   java-vanilla/                     # Gradle + protobuf-gradle-plugin + grpc-java
   node/                             # @grpc/grpc-js + grpc-tools (TypeScript via tsx)
+  rust/                             # tonic + prost (compile-time stub gen via tonic-build)
 ```
 
 Each language directory ships a `run.sh` that handles its own stub generation, dependency install, and execution against both fixtures. You only need the toolchains for the languages you care about.
@@ -59,6 +60,7 @@ examples/python/run.sh
 examples/go/run.sh
 examples/java-vanilla/run.sh
 examples/node/run.sh
+examples/rust/run.sh
 ```
 
 Each `run.sh` accepts optional fixture paths; with no args it runs both bundled PDFs.
@@ -71,6 +73,7 @@ Each `run.sh` accepts optional fixture paths; with no args it runs both bundled 
 | `examples/go` | Go 1.22+, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` | Install the gen plugins with `go install google.golang.org/protobuf/cmd/protoc-gen-go@latest` and `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest`. |
 | `examples/java-vanilla` | JDK 17+, Gradle | Uses the protobuf Gradle plugin; bundles its own `protoc` artifact. |
 | `examples/node` | Node.js 20+, npm | Uses `grpc-tools` (bundled `protoc`) via `npx`. |
+| `examples/rust` | Rust stable (1.74+), `protoc` | `tonic-build` runs `protoc` at compile time and emits stubs into `target/`; nothing is committed. |
 
 `gh` and `git` are used by the bootstrap orchestrator to fetch upstream PR refs; they are not required by the individual `run.sh` scripts.
 

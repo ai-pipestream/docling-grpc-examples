@@ -63,6 +63,7 @@ example_runnable() {
     go)           has go && has protoc && has protoc-gen-go && has protoc-gen-go-grpc ;;
     java-vanilla) has java && has gradle ;;
     node)         has node && has npm ;;
+    rust)         has cargo && has protoc ;;
     *) return 1 ;;
   esac
 }
@@ -106,14 +107,14 @@ wait_for_grpc() {
 }
 
 echo "Detected toolchains:"
-for tool in python3 uv go protoc protoc-gen-go protoc-gen-go-grpc java gradle node npm gh; do
+for tool in python3 uv go protoc protoc-gen-go protoc-gen-go-grpc java gradle node npm cargo gh; do
   printf '  - %-22s %s\n' "$tool" "$(has "$tool" && echo present || echo missing)"
 done
 echo
 
 echo "Examples that will run:"
 RUNNABLE=()
-for ex in python go java-vanilla node; do
+for ex in python go java-vanilla node rust; do
   if example_runnable "$ex"; then
     RUNNABLE+=("$ex")
     echo "  - ${ex}"
