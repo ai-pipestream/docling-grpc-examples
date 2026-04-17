@@ -8,8 +8,8 @@
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <protobuf.version>3.25.3</protobuf.version>
-    <grpc.version>1.67.1</grpc.version>
+    <protobuf.version>3.25.5</protobuf.version>
+    <grpc.version>1.75.0</grpc.version>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.version>3.18.2</quarkus.platform.version>

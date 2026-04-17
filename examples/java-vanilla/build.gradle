@@ -18,20 +18,20 @@ java {
 }
 
 dependencies {
-    implementation 'io.grpc:grpc-netty-shaded:1.67.1'
-    implementation 'io.grpc:grpc-protobuf:1.67.1'
-    implementation 'io.grpc:grpc-stub:1.67.1'
-    implementation 'com.google.protobuf:protobuf-java:3.25.3'
+    implementation 'io.grpc:grpc-netty-shaded:1.75.0'
+    implementation 'io.grpc:grpc-protobuf:1.75.0'
+    implementation 'io.grpc:grpc-stub:1.75.0'
+    implementation 'com.google.protobuf:protobuf-java:3.25.5'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
 }
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.25.3'
+        artifact = 'com.google.protobuf:protoc:3.25.5'
     }
     plugins {
         grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.67.1'
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.75.0'
         }
     }
     generateProtoTasks {
