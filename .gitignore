@@ -22,5 +22,4 @@ examples/node/dist/
 examples/python/src/ai/
 
 # Generated protobuf for Java proto sync
-examples/java-quarkus/src/main/proto/ai/
 examples/java-vanilla/src/main/proto/ai/
