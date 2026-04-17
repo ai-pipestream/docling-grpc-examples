@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'org.example.docling'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+dependencies {
+    implementation 'io.grpc:grpc-netty-shaded:1.67.1'
+    implementation 'io.grpc:grpc-protobuf:1.67.1'
+    implementation 'io.grpc:grpc-stub:1.67.1'
+    implementation 'com.google.protobuf:protobuf-java:3.25.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.25.3'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.67.1'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
+        }
+    }
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/proto'
+        }
+    }
+}
+
+application {
+    mainClass = 'org.example.docling.vanilla.Main'
+}

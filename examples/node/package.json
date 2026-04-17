@@ -1,0 +1,19 @@
+{
+  "name": "docling-grpc-node-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "generate": "bash ./generate.sh",
+    "run": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.5",
+    "google-protobuf": "^3.21.4"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.13.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "@types/node": "^22.15.2"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "fixture": "clean.pdf",
+  "min_pages": 1,
+  "min_non_empty_text_items": 1,
+  "required_tokens": [],
+  "ocr_required": false
+}
