@@ -1,0 +1,7 @@
+{
+  "fixture": "scanned.pdf",
+  "min_pages": 9,
+  "min_non_empty_text_items": 20,
+  "required_tokens": [],
+  "ocr_required": true
+}

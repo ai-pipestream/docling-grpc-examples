@@ -1,0 +1,7 @@
+{
+  "fixture": "clean.pdf",
+  "min_pages": 9,
+  "min_non_empty_text_items": 50,
+  "required_tokens": ["doclaynet"],
+  "ocr_required": false
+}
