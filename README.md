@@ -93,9 +93,9 @@ Every example performs the same checks, so a passing run in one language is a fa
 ## Design notes
 
 - **Pydantic remains the source of truth.** The proto files in `proto/` are the wire contract for non-Python clients only. The upstream gRPC server validates parity at startup so any drift between Pydantic and proto produces a server-side warning rather than a silent client incompatibility.
-- **No `buf`, no per-language CI here.** Stub generation in each example uses either the language's native toolchain (`grpc_tools`, `grpc-tools`, `protoc-gen-go-*`, `protobuf-gradle-plugin`) or vendored `protoc`. The upstream PRs use `protoc` only.
+- **No per-language CI here.** Stub generation in each example uses either the language's native toolchain (`grpc_tools`, `grpc-tools`, `protoc-gen-go-*`, `protobuf-gradle-plugin`) or vendored `protoc`. The upstream PRs use `protoc` only.
 - **2 GB message ceiling.** All four examples raise client message size limits to match the server (default gRPC client cap of 4 MB is too small for realistic `DoclingDocument` responses).
-- **Quarkus.** A naive Quarkus example was prototyped here and removed because it didn't use any Quarkus-idiomatic constructs (`@GrpcClient`, dev services, native image hints). A proper Quarkus extension belongs in its own repo and will likely live under [`quarkiverse/quarkus-docling`](https://github.com/quarkiverse/quarkus-docling) once the gRPC API is upstream.
+- a quarkus extension will be added based off of [`quarkiverse/quarkus-docling`](https://github.com/quarkiverse/quarkus-docling) once the gRPC API is upstream.
 
 ## Contributing a new language
 
