@@ -184,6 +184,10 @@ message SourceType {
 // BaseMeta contains metadata fields common to most document items.
 message BaseMeta {
   optional SummaryMetaField summary = 1;
+  optional LanguageMetaField language = 2;
+  optional EntitiesMetaField entities = 3;
+  optional KeywordsMetaField keywords = 4;
+  optional TopicsMetaField topics = 5;
   map<string, google.protobuf.Value> custom_fields = 100;
 }
 
@@ -192,6 +196,45 @@ message SummaryMetaField {
   optional double confidence = 1;
   optional string created_by = 2;
   string text = 3;
+  map<string, google.protobuf.Value> custom_fields = 100;
+}
+
+// LanguageMetaField contains detected human language metadata.
+message LanguageMetaField {
+  optional double confidence = 1;
+  optional string created_by = 2;
+  HumanLanguageLabel code = 3;
+  // Raw code fallback for forward-compatibility with newer language vocabularies.
+  optional string code_raw = 4;
+  map<string, google.protobuf.Value> custom_fields = 100;
+}
+
+// EntityMention is a named entity extracted from text content.
+message EntityMention {
+  optional double confidence = 1;
+  optional string created_by = 2;
+  string text = 3;
+  optional string orig = 4;
+  optional string label = 5;
+  optional IntSpan charspan = 6;
+  map<string, google.protobuf.Value> custom_fields = 100;
+}
+
+// EntitiesMetaField groups extracted entity mentions.
+message EntitiesMetaField {
+  repeated EntityMention mentions = 1;
+  map<string, google.protobuf.Value> custom_fields = 100;
+}
+
+// KeywordsMetaField groups salient keyword or keyphrase strings for a node.
+message KeywordsMetaField {
+  repeated string values = 1;
+  map<string, google.protobuf.Value> custom_fields = 100;
+}
+
+// TopicsMetaField groups higher-level subject or theme labels for a node.
+message TopicsMetaField {
+  repeated string values = 1;
   map<string, google.protobuf.Value> custom_fields = 100;
 }
 
@@ -243,6 +286,15 @@ enum CoordOrigin {
   COORD_ORIGIN_UNSPECIFIED = 0;
   COORD_ORIGIN_TOPLEFT = 1;
   COORD_ORIGIN_BOTTOMLEFT = 2;
+}
+
+// Orientation defines counter-clockwise rotation of a table on the page, in degrees.
+enum Orientation {
+  ORIENTATION_UNSPECIFIED = 0;
+  ORIENTATION_ROT_0 = 1;
+  ORIENTATION_ROT_90 = 2;
+  ORIENTATION_ROT_180 = 3;
+  ORIENTATION_ROT_270 = 4;
 }
 
 // CodeLanguageLabel defines the programming language for code blocks.
@@ -309,6 +361,196 @@ enum CodeLanguageLabel {
   CODE_LANGUAGE_LABEL_LATEX = 59;
   CODE_LANGUAGE_LABEL_TIKZ = 60;
   CODE_LANGUAGE_LABEL_DOCLANG = 61;
+}
+
+// HumanLanguageLabel defines BCP-47 primary language subtags.
+enum HumanLanguageLabel {
+  HUMAN_LANGUAGE_LABEL_UNSPECIFIED = 0;
+  HUMAN_LANGUAGE_LABEL_AA = 1; // aa
+  HUMAN_LANGUAGE_LABEL_AB = 2; // ab
+  HUMAN_LANGUAGE_LABEL_AE = 3; // ae
+  HUMAN_LANGUAGE_LABEL_AF = 4; // af
+  HUMAN_LANGUAGE_LABEL_AK = 5; // ak
+  HUMAN_LANGUAGE_LABEL_AM = 6; // am
+  HUMAN_LANGUAGE_LABEL_AN = 7; // an
+  HUMAN_LANGUAGE_LABEL_AR = 8; // ar
+  HUMAN_LANGUAGE_LABEL_AS = 9; // as
+  HUMAN_LANGUAGE_LABEL_AV = 10; // av
+  HUMAN_LANGUAGE_LABEL_AY = 11; // ay
+  HUMAN_LANGUAGE_LABEL_AZ = 12; // az
+  HUMAN_LANGUAGE_LABEL_BA = 13; // ba
+  HUMAN_LANGUAGE_LABEL_BE = 14; // be
+  HUMAN_LANGUAGE_LABEL_BG = 15; // bg
+  HUMAN_LANGUAGE_LABEL_BH = 16; // bh
+  HUMAN_LANGUAGE_LABEL_BI = 17; // bi
+  HUMAN_LANGUAGE_LABEL_BM = 18; // bm
+  HUMAN_LANGUAGE_LABEL_BN = 19; // bn
+  HUMAN_LANGUAGE_LABEL_BO = 20; // bo
+  HUMAN_LANGUAGE_LABEL_BR = 21; // br
+  HUMAN_LANGUAGE_LABEL_BS = 22; // bs
+  HUMAN_LANGUAGE_LABEL_CA = 23; // ca
+  HUMAN_LANGUAGE_LABEL_CE = 24; // ce
+  HUMAN_LANGUAGE_LABEL_CH = 25; // ch
+  HUMAN_LANGUAGE_LABEL_CO = 26; // co
+  HUMAN_LANGUAGE_LABEL_CR = 27; // cr
+  HUMAN_LANGUAGE_LABEL_CS = 28; // cs
+  HUMAN_LANGUAGE_LABEL_CU = 29; // cu
+  HUMAN_LANGUAGE_LABEL_CV = 30; // cv
+  HUMAN_LANGUAGE_LABEL_CY = 31; // cy
+  HUMAN_LANGUAGE_LABEL_DA = 32; // da
+  HUMAN_LANGUAGE_LABEL_DE = 33; // de
+  HUMAN_LANGUAGE_LABEL_DV = 34; // dv
+  HUMAN_LANGUAGE_LABEL_DZ = 35; // dz
+  HUMAN_LANGUAGE_LABEL_EE = 36; // ee
+  HUMAN_LANGUAGE_LABEL_EL = 37; // el
+  HUMAN_LANGUAGE_LABEL_EN = 38; // en
+  HUMAN_LANGUAGE_LABEL_EO = 39; // eo
+  HUMAN_LANGUAGE_LABEL_ES = 40; // es
+  HUMAN_LANGUAGE_LABEL_ET = 41; // et
+  HUMAN_LANGUAGE_LABEL_EU = 42; // eu
+  HUMAN_LANGUAGE_LABEL_FA = 43; // fa
+  HUMAN_LANGUAGE_LABEL_FF = 44; // ff
+  HUMAN_LANGUAGE_LABEL_FI = 45; // fi
+  HUMAN_LANGUAGE_LABEL_FJ = 46; // fj
+  HUMAN_LANGUAGE_LABEL_FO = 47; // fo
+  HUMAN_LANGUAGE_LABEL_FR = 48; // fr
+  HUMAN_LANGUAGE_LABEL_FY = 49; // fy
+  HUMAN_LANGUAGE_LABEL_GA = 50; // ga
+  HUMAN_LANGUAGE_LABEL_GD = 51; // gd
+  HUMAN_LANGUAGE_LABEL_GL = 52; // gl
+  HUMAN_LANGUAGE_LABEL_GN = 53; // gn
+  HUMAN_LANGUAGE_LABEL_GU = 54; // gu
+  HUMAN_LANGUAGE_LABEL_GV = 55; // gv
+  HUMAN_LANGUAGE_LABEL_HA = 56; // ha
+  HUMAN_LANGUAGE_LABEL_HE = 57; // he
+  HUMAN_LANGUAGE_LABEL_HI = 58; // hi
+  HUMAN_LANGUAGE_LABEL_HO = 59; // ho
+  HUMAN_LANGUAGE_LABEL_HR = 60; // hr
+  HUMAN_LANGUAGE_LABEL_HT = 61; // ht
+  HUMAN_LANGUAGE_LABEL_HU = 62; // hu
+  HUMAN_LANGUAGE_LABEL_HY = 63; // hy
+  HUMAN_LANGUAGE_LABEL_HZ = 64; // hz
+  HUMAN_LANGUAGE_LABEL_IA = 65; // ia
+  HUMAN_LANGUAGE_LABEL_ID = 66; // id
+  HUMAN_LANGUAGE_LABEL_IE = 67; // ie
+  HUMAN_LANGUAGE_LABEL_IG = 68; // ig
+  HUMAN_LANGUAGE_LABEL_II = 69; // ii
+  HUMAN_LANGUAGE_LABEL_IK = 70; // ik
+  HUMAN_LANGUAGE_LABEL_IO = 71; // io
+  HUMAN_LANGUAGE_LABEL_IS = 72; // is
+  HUMAN_LANGUAGE_LABEL_IT = 73; // it
+  HUMAN_LANGUAGE_LABEL_IU = 74; // iu
+  HUMAN_LANGUAGE_LABEL_JA = 75; // ja
+  HUMAN_LANGUAGE_LABEL_JV = 76; // jv
+  HUMAN_LANGUAGE_LABEL_KA = 77; // ka
+  HUMAN_LANGUAGE_LABEL_KG = 78; // kg
+  HUMAN_LANGUAGE_LABEL_KI = 79; // ki
+  HUMAN_LANGUAGE_LABEL_KJ = 80; // kj
+  HUMAN_LANGUAGE_LABEL_KK = 81; // kk
+  HUMAN_LANGUAGE_LABEL_KL = 82; // kl
+  HUMAN_LANGUAGE_LABEL_KM = 83; // km
+  HUMAN_LANGUAGE_LABEL_KN = 84; // kn
+  HUMAN_LANGUAGE_LABEL_KO = 85; // ko
+  HUMAN_LANGUAGE_LABEL_KR = 86; // kr
+  HUMAN_LANGUAGE_LABEL_KS = 87; // ks
+  HUMAN_LANGUAGE_LABEL_KU = 88; // ku
+  HUMAN_LANGUAGE_LABEL_KV = 89; // kv
+  HUMAN_LANGUAGE_LABEL_KW = 90; // kw
+  HUMAN_LANGUAGE_LABEL_KY = 91; // ky
+  HUMAN_LANGUAGE_LABEL_LA = 92; // la
+  HUMAN_LANGUAGE_LABEL_LB = 93; // lb
+  HUMAN_LANGUAGE_LABEL_LG = 94; // lg
+  HUMAN_LANGUAGE_LABEL_LI = 95; // li
+  HUMAN_LANGUAGE_LABEL_LN = 96; // ln
+  HUMAN_LANGUAGE_LABEL_LO = 97; // lo
+  HUMAN_LANGUAGE_LABEL_LT = 98; // lt
+  HUMAN_LANGUAGE_LABEL_LU = 99; // lu
+  HUMAN_LANGUAGE_LABEL_LV = 100; // lv
+  HUMAN_LANGUAGE_LABEL_MG = 101; // mg
+  HUMAN_LANGUAGE_LABEL_MH = 102; // mh
+  HUMAN_LANGUAGE_LABEL_MI = 103; // mi
+  HUMAN_LANGUAGE_LABEL_MK = 104; // mk
+  HUMAN_LANGUAGE_LABEL_ML = 105; // ml
+  HUMAN_LANGUAGE_LABEL_MN = 106; // mn
+  HUMAN_LANGUAGE_LABEL_MR = 107; // mr
+  HUMAN_LANGUAGE_LABEL_MS = 108; // ms
+  HUMAN_LANGUAGE_LABEL_MT = 109; // mt
+  HUMAN_LANGUAGE_LABEL_MY = 110; // my
+  HUMAN_LANGUAGE_LABEL_NA = 111; // na
+  HUMAN_LANGUAGE_LABEL_NB = 112; // nb
+  HUMAN_LANGUAGE_LABEL_ND = 113; // nd
+  HUMAN_LANGUAGE_LABEL_NE = 114; // ne
+  HUMAN_LANGUAGE_LABEL_NG = 115; // ng
+  HUMAN_LANGUAGE_LABEL_NL = 116; // nl
+  HUMAN_LANGUAGE_LABEL_NN = 117; // nn
+  HUMAN_LANGUAGE_LABEL_NO = 118; // no
+  HUMAN_LANGUAGE_LABEL_NR = 119; // nr
+  HUMAN_LANGUAGE_LABEL_NV = 120; // nv
+  HUMAN_LANGUAGE_LABEL_NY = 121; // ny
+  HUMAN_LANGUAGE_LABEL_OC = 122; // oc
+  HUMAN_LANGUAGE_LABEL_OJ = 123; // oj
+  HUMAN_LANGUAGE_LABEL_OM = 124; // om
+  HUMAN_LANGUAGE_LABEL_OR = 125; // or
+  HUMAN_LANGUAGE_LABEL_OS = 126; // os
+  HUMAN_LANGUAGE_LABEL_PA = 127; // pa
+  HUMAN_LANGUAGE_LABEL_PI = 128; // pi
+  HUMAN_LANGUAGE_LABEL_PL = 129; // pl
+  HUMAN_LANGUAGE_LABEL_PS = 130; // ps
+  HUMAN_LANGUAGE_LABEL_PT = 131; // pt
+  HUMAN_LANGUAGE_LABEL_QU = 132; // qu
+  HUMAN_LANGUAGE_LABEL_RM = 133; // rm
+  HUMAN_LANGUAGE_LABEL_RN = 134; // rn
+  HUMAN_LANGUAGE_LABEL_RO = 135; // ro
+  HUMAN_LANGUAGE_LABEL_RU = 136; // ru
+  HUMAN_LANGUAGE_LABEL_RW = 137; // rw
+  HUMAN_LANGUAGE_LABEL_SA = 138; // sa
+  HUMAN_LANGUAGE_LABEL_SC = 139; // sc
+  HUMAN_LANGUAGE_LABEL_SD = 140; // sd
+  HUMAN_LANGUAGE_LABEL_SE = 141; // se
+  HUMAN_LANGUAGE_LABEL_SG = 142; // sg
+  HUMAN_LANGUAGE_LABEL_SH = 143; // sh
+  HUMAN_LANGUAGE_LABEL_SI = 144; // si
+  HUMAN_LANGUAGE_LABEL_SK = 145; // sk
+  HUMAN_LANGUAGE_LABEL_SL = 146; // sl
+  HUMAN_LANGUAGE_LABEL_SM = 147; // sm
+  HUMAN_LANGUAGE_LABEL_SN = 148; // sn
+  HUMAN_LANGUAGE_LABEL_SO = 149; // so
+  HUMAN_LANGUAGE_LABEL_SQ = 150; // sq
+  HUMAN_LANGUAGE_LABEL_SR = 151; // sr
+  HUMAN_LANGUAGE_LABEL_SS = 152; // ss
+  HUMAN_LANGUAGE_LABEL_ST = 153; // st
+  HUMAN_LANGUAGE_LABEL_SU = 154; // su
+  HUMAN_LANGUAGE_LABEL_SV = 155; // sv
+  HUMAN_LANGUAGE_LABEL_SW = 156; // sw
+  HUMAN_LANGUAGE_LABEL_TA = 157; // ta
+  HUMAN_LANGUAGE_LABEL_TE = 158; // te
+  HUMAN_LANGUAGE_LABEL_TG = 159; // tg
+  HUMAN_LANGUAGE_LABEL_TH = 160; // th
+  HUMAN_LANGUAGE_LABEL_TI = 161; // ti
+  HUMAN_LANGUAGE_LABEL_TK = 162; // tk
+  HUMAN_LANGUAGE_LABEL_TL = 163; // tl
+  HUMAN_LANGUAGE_LABEL_TN = 164; // tn
+  HUMAN_LANGUAGE_LABEL_TO = 165; // to
+  HUMAN_LANGUAGE_LABEL_TR = 166; // tr
+  HUMAN_LANGUAGE_LABEL_TS = 167; // ts
+  HUMAN_LANGUAGE_LABEL_TT = 168; // tt
+  HUMAN_LANGUAGE_LABEL_TW = 169; // tw
+  HUMAN_LANGUAGE_LABEL_TY = 170; // ty
+  HUMAN_LANGUAGE_LABEL_UG = 171; // ug
+  HUMAN_LANGUAGE_LABEL_UK = 172; // uk
+  HUMAN_LANGUAGE_LABEL_UR = 173; // ur
+  HUMAN_LANGUAGE_LABEL_UZ = 174; // uz
+  HUMAN_LANGUAGE_LABEL_VE = 175; // ve
+  HUMAN_LANGUAGE_LABEL_VI = 176; // vi
+  HUMAN_LANGUAGE_LABEL_VO = 177; // vo
+  HUMAN_LANGUAGE_LABEL_WA = 178; // wa
+  HUMAN_LANGUAGE_LABEL_WO = 179; // wo
+  HUMAN_LANGUAGE_LABEL_XH = 180; // xh
+  HUMAN_LANGUAGE_LABEL_YI = 181; // yi
+  HUMAN_LANGUAGE_LABEL_YO = 182; // yo
+  HUMAN_LANGUAGE_LABEL_ZA = 183; // za
+  HUMAN_LANGUAGE_LABEL_ZH = 184; // zh
+  HUMAN_LANGUAGE_LABEL_ZU = 185; // zu
 }
 
 // Formatting contains text formatting/styling information.
@@ -633,6 +875,10 @@ message PictureMeta {
   optional MoleculeMetaField molecule = 4;
   optional TabularChartMetaField tabular_chart = 5;
   optional CodeMetaField code = 6;
+  optional LanguageMetaField language = 7;
+  optional EntitiesMetaField entities = 8;
+  optional KeywordsMetaField keywords = 9;
+  optional TopicsMetaField topics = 10;
   map<string, google.protobuf.Value> custom_fields = 100;
 }
 
@@ -690,6 +936,10 @@ message CodeMetaField {
 message FloatingMeta {
   optional SummaryMetaField summary = 1;
   optional DescriptionMetaField description = 2;
+  optional LanguageMetaField language = 3;
+  optional EntitiesMetaField entities = 4;
+  optional KeywordsMetaField keywords = 5;
+  optional TopicsMetaField topics = 6;
   map<string, google.protobuf.Value> custom_fields = 100;
 }
 
@@ -720,6 +970,9 @@ message TableData {
   int32 num_rows = 2;
   int32 num_cols = 3;
   repeated TableRow grid = 4;
+  Orientation orientation = 5;
+  // Raw orientation fallback for forward-compatibility with newer rotation values.
+  optional string orientation_raw = 6;
 }
 
 // TableRow represents a single row in the table.
