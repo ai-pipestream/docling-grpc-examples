@@ -7,10 +7,10 @@
 # them all together against a freshly-built server.
 #
 # Sources used (override via env):
-#   DOCLING_CORE_REPO   default docling-project/docling-core
-#   DOCLING_CORE_REF    default pr/546                (use 'main' once merged)
-#   DOCLING_SERVE_REPO  default docling-project/docling-serve
-#   DOCLING_SERVE_REF   default pr/504                (use 'main' once merged)
+#   DOCLING_CORE_REPO   default ai-pipestream/docling-core
+#   DOCLING_CORE_REF    default main
+#   DOCLING_SERVE_REPO  default ai-pipestream/docling-serve
+#   DOCLING_SERVE_REF   default main
 #
 # A ref of the form pr/<N> triggers `gh pr checkout <N>`. Anything else is
 # passed through to `git checkout`.
@@ -28,10 +28,10 @@ WORK_DIR="${ROOT_DIR}/.work"
 CORE_DIR="${WORK_DIR}/docling-core"
 SERVE_DIR="${WORK_DIR}/docling-serve"
 
-DOCLING_CORE_REPO="${DOCLING_CORE_REPO:-docling-project/docling-core}"
-DOCLING_CORE_REF="${DOCLING_CORE_REF:-pr/546}"
-DOCLING_SERVE_REPO="${DOCLING_SERVE_REPO:-docling-project/docling-serve}"
-DOCLING_SERVE_REF="${DOCLING_SERVE_REF:-pr/504}"
+DOCLING_CORE_REPO="${DOCLING_CORE_REPO:-ai-pipestream/docling-core}"
+DOCLING_CORE_REF="${DOCLING_CORE_REF:-main}"
+DOCLING_SERVE_REPO="${DOCLING_SERVE_REPO:-ai-pipestream/docling-serve}"
+DOCLING_SERVE_REF="${DOCLING_SERVE_REF:-main}"
 
 DOCLING_GRPC_HOST="${DOCLING_GRPC_HOST:-127.0.0.1}"
 DOCLING_GRPC_PORT="${DOCLING_GRPC_PORT:-50051}"

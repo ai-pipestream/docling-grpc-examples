@@ -1,17 +1,17 @@
 # docling-grpc-examples
 
-Multi-language gRPC client examples for [`docling-serve`](https://github.com/docling-project/docling-serve), driven entirely from the `.proto` IDL in this repository. The point of this repo is to make it obvious that adding a gRPC interface to docling-serve is not a Python-only feature: every language that has a gRPC stack gets a first-class client for free, with the Pydantic models in `docling-core` remaining the single source of truth.
+Multi-language gRPC client examples for [`ai-pipestream/docling-serve`](https://github.com/ai-pipestream/docling-serve), driven entirely from the `.proto` IDL in this repository. The point of this repo is to make it obvious that adding a gRPC interface to docling-serve is not a Python-only feature: every language that has a gRPC stack gets a first-class client for free, with the Pydantic models in `docling-core` remaining the single source of truth.
 
 The examples are intentionally **not** part of any CI in the upstream `docling-core` / `docling-serve` PRs. They live here so reviewers (and curious users) can run them locally without dragging multi-language toolchains into the upstream maintenance burden.
 
-## Tracked PRs
+## Source of truth
 
-These examples target the in-flight gRPC PRs:
+These examples target the **ai-pipestream** forks (gRPC lives there, not on docling-project main):
 
-- [`docling-project/docling-core#546`](https://github.com/docling-project/docling-core/pull/546)
-- [`docling-project/docling-serve#504`](https://github.com/docling-project/docling-serve/pull/504)
+- [`ai-pipestream/docling-core`](https://github.com/ai-pipestream/docling-core/tree/main)
+- [`ai-pipestream/docling-serve`](https://github.com/ai-pipestream/docling-serve/tree/main)
 
-Until those merge, the bootstrap script defaults to `pr/546` and `pr/504`. After they merge, set `DOCLING_CORE_REF=main` and `DOCLING_SERVE_REF=main` (or pin a tag).
+`proto/` is a vendored copy of those IDLs. Bootstrap defaults to those repos on `main`. Override with `DOCLING_CORE_REPO` / `DOCLING_SERVE_REPO` and `DOCLING_CORE_REF` / `DOCLING_SERVE_REF`.
 
 ## Repository layout
 
@@ -44,7 +44,7 @@ You need at least `git`, `gh`, and `uv` to bring up the server. Install only the
 That script:
 
 1. Detects which language toolchains are present and prints a runnable list.
-2. Checks out [`docling-project/docling-core`](https://github.com/docling-project/docling-core) and [`docling-project/docling-serve`](https://github.com/docling-project/docling-serve) into `.work/` at the configured refs (PR refs by default).
+2. Checks out [`ai-pipestream/docling-core`](https://github.com/ai-pipestream/docling-core) and [`ai-pipestream/docling-serve`](https://github.com/ai-pipestream/docling-serve) into `.work/` at `main` (override via env).
 3. Runs `uv sync` in the docling-serve checkout.
 4. Starts the gRPC server via `uv run docling-serve-grpc run --host ... --port ...`.
 5. Runs every detected `examples/<lang>/run.sh` against both fixtures.
