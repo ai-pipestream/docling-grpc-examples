@@ -27,6 +27,7 @@ pub mod ai {
 
 use ai::docling::core::v1::{base_text_item, BaseTextItem, DoclingDocument};
 use ai::docling::serve::v1::docling_serve_service_client::DoclingServeServiceClient;
+use ai::docling::serve::v1::convert_source_response::Result as ConvertResult;
 use ai::docling::serve::v1::{
     source, ConvertDocumentRequest, ConvertSourceRequest, FileSource, Source,
 };
@@ -105,6 +106,7 @@ async fn run(endpoint: &str, fixture: &Path) -> Result<()> {
             }],
             options: None,
             target: None,
+            callbacks: Vec::new(),
         }),
     };
 
@@ -118,12 +120,23 @@ async fn run(endpoint: &str, fixture: &Path) -> Result<()> {
         .max_encoding_message_size(GRPC_MAX_MESSAGE_BYTES);
 
     let response = client.convert_source(request).await?;
-    let doc = response
-        .into_inner()
-        .response
-        .and_then(|r| r.document)
-        .and_then(|d| d.doc)
-        .ok_or_else(|| anyhow!("response did not include a doc"))?;
+    // ConvertSourceResponse is a oneof over the REST result kinds. An in-body
+    // target yields `Response`; zip / remote / presigned targets and task-scope
+    // failures are their own variants.
+    let doc = match response.into_inner().result {
+        Some(ConvertResult::Response(r)) => r
+            .document
+            .and_then(|d| d.doc)
+            .ok_or_else(|| anyhow!("response did not include a doc"))?,
+        Some(ConvertResult::Failure(f)) => {
+            let message = f
+                .failure
+                .map(|info| info.message)
+                .unwrap_or_else(|| "unknown failure".to_string());
+            return Err(anyhow!("conversion failed: {message}"));
+        }
+        other => return Err(anyhow!("unexpected result variant: {other:?}")),
+    };
 
     assert_structural(&snapshot, &doc)
 }
